@@ -1,8 +1,8 @@
 module.exports = {
-  testEnvironment: 'jsdom',
-  collectCoverage: true,
+  testEnvironment: 'jest-environment-jsdom',
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   moduleNameMapper: {
-    '\\.(css|less|scss|sass)$': 'identity-obj-proxy'
-  }
-}
+    '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
+  },
+  testPathIgnorePatterns: ['/node_modules/', '/.next/'],
+};
