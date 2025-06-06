@@ -1,6 +1,6 @@
 {
-  "name": "tubes-mkepl",
-  "version": "0.2.1",
+  "name": "@kodoktempur666/tubes-mkepl",
+  "version": "0.1.0",
   "private": false,
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",
