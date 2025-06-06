@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   build:
     name: 🔧 Build & Install
@@ -53,6 +57,9 @@ jobs:
     needs: [lint, test]
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    permissions:
+      contents: read
+      packages: write
     steps:
       - uses: actions/checkout@v4
       
@@ -61,10 +68,14 @@ jobs:
         with:
           node-version: 20
           registry-url: 'https://npm.pkg.github.com'
-          scope: '@kodoktempur666'
       
       - name: Install Dependencies
         run: npm ci
+      
+      - name: Configure npm for GitHub Packages
+        run: |
+          echo "@kodoktempur666:registry=https://npm.pkg.github.com/" >> ~/.npmrc
+          echo "//npm.pkg.github.com/:_authToken=\${NODE_AUTH_TOKEN}" >> ~/.npmrc
       
       - name: Publish to GitHub Packages
         run: npm publish
