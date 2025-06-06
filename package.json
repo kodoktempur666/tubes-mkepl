@@ -1,8 +1,9 @@
 {
   "name": "@kodoktempur666/tubes-mkepl",
   "version": "0.1.0",
+  "private": false,
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
+    "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
     "dev": "next dev --turbopack",
