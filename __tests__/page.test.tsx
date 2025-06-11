@@ -1,68 +1,69 @@
 // __tests__/page.test.tsx
 import '@testing-library/jest-dom';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import Home from '../app/page';
 
-// Mock Next.js Image component
-jest.mock('next/image', () => ({
-  __esModule: true,
-  default: ({ src, alt, ...props }: any) => {
-    // eslint-disable-next-line @next/next/no-img-element
-    return <img src={src} alt={alt} {...props} />;
-  },
-}));
-
 describe('Home Page', () => {
-  it('renders Next.js logo', () => {
+  it('renders calculator input', () => {
     render(<Home />);
-    const logo = screen.getByAltText('Next.js logo');
-    expect(logo).toBeInTheDocument();
+    const inputField = screen.getByRole('textbox');
+    expect(inputField).toBeInTheDocument();
   });
 
-  it('renders "Deploy now" button', () => {
+  it('can click number buttons and update input', () => {
     render(<Home />);
-    const deployButton = screen.getByText(/Deploy now/i);
-    expect(deployButton).toBeInTheDocument();
+    const inputField = screen.getByRole('textbox');
+
+    fireEvent.click(screen.getByText('7'));
+    fireEvent.click(screen.getByText('8'));
+    fireEvent.click(screen.getByText('9'));
+
+    expect(inputField).toHaveValue('789');
   });
 
-  it('renders "Read our docs" button', () => {
+  it('can click operator buttons and update input', () => {
     render(<Home />);
-    const docsButton = screen.getByText(/Read our docs/i);
-    expect(docsButton).toBeInTheDocument();
+    const inputField = screen.getByRole('textbox');
+
+    fireEvent.click(screen.getByText('7'));
+    fireEvent.click(screen.getByText('+'));
+    fireEvent.click(screen.getByText('3'));
+
+    expect(inputField).toHaveValue('7+3');
   });
 
-  it('renders the main instruction text', () => {
+  it('can perform evaluation of an expression', () => {
     render(<Home />);
-    const instructionText = screen.getByText(/Get started by editing/i);
-    expect(instructionText).toBeInTheDocument();
+    const inputField = screen.getByRole('textbox');
+
+    fireEvent.click(screen.getByText('7'));
+    fireEvent.click(screen.getByText('+'));
+    fireEvent.click(screen.getByText('3'));
+    fireEvent.click(screen.getByText('='));
+
+    expect(inputField).toHaveValue('10');
   });
 
-  it('renders the code snippet', () => {
+  it('can clear the input', () => {
     render(<Home />);
-    const codeSnippet = screen.getByText('app/page.tsx');
-    expect(codeSnippet).toBeInTheDocument();
+    const inputField = screen.getByRole('textbox');
+
+    fireEvent.click(screen.getByText('7'));
+    fireEvent.click(screen.getByText('C'));
+
+    expect(inputField).toHaveValue('');
   });
 
-  it('renders footer links', () => {
+  it('shows error for invalid input', () => {
     render(<Home />);
-    const learnLink = screen.getByText('Learn');
-    const examplesLink = screen.getByText('Examples');
-    const nextjsLink = screen.getByText('Go to nextjs.org →');
-    
-    expect(learnLink).toBeInTheDocument();
-    expect(examplesLink).toBeInTheDocument();
-    expect(nextjsLink).toBeInTheDocument();
-  });
+    const inputField = screen.getByRole('textbox');
 
-  it('has correct external links', () => {
-    render(<Home />);
-    
-    const deployButton = screen.getByRole('link', { name: /Deploy now/i });
-    const docsButton = screen.getByRole('link', { name: /Read our docs/i });
-    
-    expect(deployButton).toHaveAttribute('href', expect.stringContaining('vercel.com'));
-    expect(docsButton).toHaveAttribute('href', expect.stringContaining('nextjs.org/docs'));
-    expect(deployButton).toHaveAttribute('target', '_blank');
-    expect(docsButton).toHaveAttribute('target', '_blank');
+    // Update division operator to match the actual symbol used (÷ instead of /)
+    fireEvent.click(screen.getByText('7'));
+    fireEvent.click(screen.getByText('÷')); // Correct the division operator symbol here
+    fireEvent.click(screen.getByText('0'));
+    fireEvent.click(screen.getByText('='));
+
+    expect(inputField).toHaveValue('Error');
   });
 });
